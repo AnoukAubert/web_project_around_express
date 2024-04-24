@@ -2,6 +2,7 @@ const router = require('express').Router();
 const fs = require('fs/promises');
 const path = require('path');
 const filePath = path.join(__dirname, '../data/users.json');
+const User = require('../models/user');
 
 router.get('/users', (request, response) => {
   fs.readFile(filePath).then(content => {
@@ -21,5 +22,13 @@ router.get('/users/:id', (request, response)=> {
     }
   })
 })
+
+router.post('/', (req, res) => {
+  const { name, about, avatar } = req.body;
+
+  User.create({ name, about, avatar })
+    .then(user => res.send({ data: user }))
+    .catch(err => res.status(500).send({ message: 'Error' }));
+});
 
 module.exports = router;
