@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const cardSchema = new Schema({
+const cardSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -9,15 +9,23 @@ const cardSchema = new Schema({
   },
   link: {
     type: String,
-    required: true, //validador
+    required: true,
+    validate: {
+      validator: function(url) {
+        return /(((http|https):\/\/)|(\/)|(..\/))(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(url);
+      },
+      message: "URL NO VALIDA"
+    }
   },
   owner: {
-    type: ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: 'user'
   },
   likes: {
-    type: ObjectId,
-    defaultvalue: defaultfield.likes//me falta default field
+    type:  mongoose.Schema.Types.ObjectId,
+    defaultvalue:[],
+    ref: 'user'
   },
   createdAt: {
     type: Date,

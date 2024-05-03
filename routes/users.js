@@ -1,34 +1,17 @@
-const router = require('express').Router();
-const fs = require('fs/promises');
-const path = require('path');
-const filePath = path.join(__dirname, '../data/users.json');
-const User = require('../models/user');
+const router = require("express").Router();
+const User = require("../models/user");
+const {getAllUsers, me, updateAvatar, getUser, createUser, updateUser} = require("../controllers/users");
 
-router.get('/users', (request, response) => {
-  fs.readFile(filePath).then(content => {
-    const jsonData = JSON.parse(content);
-    response.send(jsonData);
-  })
-});
+router.get('/users/me', me);
 
-router.get('/users/:id', (request, response)=> {
-  fs.readFile(filePath).then(content => {
-    const jsonData = JSON.parse(content);
-    const user = jsonData.find(user => user._id === request.params.id)
-    if(user){
-      response.send(user)
-    }else{
-      response.status(404).send({message: 'NOT FOUND'});
-    }
-  })
-})
+router.patch('/users/me', updateUser);
 
-router.post('/', (req, res) => {
-  const { name, about, avatar } = req.body;
+router.patch('/users/me/avatar', updateAvatar);
 
-  User.create({ name, about, avatar })
-    .then(user => res.send({ data: user }))
-    .catch(err => res.status(500).send({ message: 'Error' }));
-});
+router.get("/users",getAllUsers );
+
+router.get("/users/:id", getUser);
+
+router.post("/users", createUser);
 
 module.exports = router;
