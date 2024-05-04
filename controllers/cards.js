@@ -3,7 +3,7 @@ const {handleErrors} = require("../utils/utils");
 
 const getAllCards = (req, res, next) => {
   Card.find({}).then((cards) => {
-    response.send({
+    res.send({
       status: true,
       data: cards,
     });
